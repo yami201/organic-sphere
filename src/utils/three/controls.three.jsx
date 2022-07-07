@@ -6,6 +6,7 @@ extend({OrbitControls})
 const Controls = () => {
     const controls = useRef()
     const {camera , gl} =  useThree()
+    camera.position.y = 0
     useFrame( () => {
         controls.current.update()
     })
