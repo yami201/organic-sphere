@@ -18,26 +18,37 @@ uniform float uLightBIntensity;
 
 uniform float uFresnelOffset;
 uniform float uFrenselMultiplier;
+
+//Animation Uniforms 
+uniform bool uAnimationTrigger;
+uniform vec3 uMousePos;
+uniform float uAnimationTimer;
 //Varying
 varying vec3 vClr;
 
 #pragma glslify: perlin4d = require('../perlin-noise.glsl')
 
 vec3 getPosition(vec3 pos){
+    float distanceFromClickPosition = distance(uMousePos,position) * 0.2;
+    float distanceMultiplier = uAnimationTrigger ? abs(-cos((distanceFromClickPosition - uAnimationTimer * 0.3) * 3.0)) * 1.5 : 0.0;
+    distanceMultiplier = step(0.1,step(1.0,distanceMultiplier)) ;
     vec3 distoredPos = pos;
-    distoredPos += perlin4d(vec4(distoredPos * uDistortionFreq,uTime * 0.0003)) * uDistortionStrength;
+    distoredPos += perlin4d(vec4(distoredPos * uDistortionFreq,uTime * 0.003 )) * uDistortionStrength ;
 
     float strength = perlin4d(vec4(distoredPos * uDisplacementFreq,uTime));
 
     vec3 displacedPosition = pos;
-    displacedPosition += normalize(pos) * strength * uDisplacementStrength;
+    
+    displacedPosition += normalize(pos) * strength * uDisplacementStrength * distanceMultiplier;
 
     return displacedPosition;
 }
 
 void main(){
-    vec3 displacedPosition = getPosition(position);
-    vec4 viewPosition = viewMatrix * vec4(displacedPosition,1.0);
+    
+    vec3 displacedPosition = getPosition(position).xyz;
+    vec4 modelPosition = modelMatrix * vec4(displacedPosition,1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectionPosition = projectionMatrix * viewPosition;
     gl_Position = projectionPosition;
 
@@ -52,10 +63,10 @@ void main(){
     vec3 biTangent = cross(normal,tangent.xyz);
 
     vec3 positionA = position + tangent.xyz * distanceA;
-    vec3 displacedPositionA = getPosition(positionA);
+    vec3 displacedPositionA = getPosition(positionA).xyz;
 
     vec3 positionB = position + biTangent * distanceB;
-    vec3 displacedPositionB = getPosition(positionB);
+    vec3 displacedPositionB = getPosition(positionB).xyz;
 
     vec3 computedNormal = cross(displacedPositionA - displacedPosition,displacedPositionB - displacedPosition);
     computedNormal = normalize(computedNormal);

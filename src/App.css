@@ -1,7 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+QLD+Beginner:wght@700&display=swap');
 body{
   margin: 0;
 }
 .App{
   height: 100vh;
   background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.App h1{
+  z-index: 1000;
+  color: white;
+  position: absolute;
+  letter-spacing: 1px;
+  font-size: 48px;
+  font-family: 'Edu QLD Beginner', cursive;
+  top: 8vh;
 }

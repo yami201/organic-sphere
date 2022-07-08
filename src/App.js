@@ -6,6 +6,7 @@ import OrganicSphere from './sphere/sphere';
 function App() {
   return (
     <div className="App">
+      <h1>Click on the sphere</h1>
       <Canvas>
         <OrganicSphere/>
         <StatsPanel/>
@@ -14,5 +15,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
